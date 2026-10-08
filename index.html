@@ -53,8 +53,8 @@
 
     function triggerStageTransit() {
       currentStage = 'train';
-      // Smoothly flip to the local train photo path natively
-      document.getElementById('skybox').setAttribute('src', 'train-pano.jpg');
+      // Smoothly points our active 3D container target to read the preloaded train background
+      document.getElementById('skybox').setAttribute('src', '#train-view');
       document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
       openConciergeDrawer('train');
     }
@@ -131,8 +131,14 @@
   </div>
 
   <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
-    <!-- We bypass the preloading cache locks and map the local files directly into the 3D dome shell -->
-    <a-sky id="skybox" src="swiss-pano.jpg" radius="5000" rotation="0 -90 0"></a-sky>
+    <!-- ASSETS ARE BACK: We map the local image names explicitly inside the preloading tray container layout -->
+    <a-assets>
+      <img id="airport-arrival" src="wps.jpg" crossorigin="anonymous">
+      <img id="train-view" src="train-pano.jpg" crossorigin="anonymous">
+    </a-assets>
+
+    <!-- The interactive dome wrapper reads from our safe asset storage deck natively -->
+    <a-sky id="skybox" src="#airport-arrival" radius="5000" rotation="0 -90 0"></a-sky>
 
     <a-ring position="0 1.5 -3" radius-inner="0.15" radius-outer="0.18" color="#FFF" drawer-trigger
             animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 1200; loop: true">
