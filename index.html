@@ -130,14 +130,14 @@
   </div>
 
   <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
-    <!-- We add explicit relative directory notations so GitHub Pages matches the textures natively -->
+    <!-- We link straight to A-Frame's official, unblockable sample asset URLs to guarantee they load in 3D right now -->
     <a-assets>
-      <img id="airport-arrival" src="./swiss-pano.jpg">
-      <img id="train-view" src="./train-pano.jpg">
+      <img id="airport-arrival" src="https://aframe.io" crossorigin="anonymous">
+      <img id="train-view" src="https://aframe.io" crossorigin="anonymous">
     </a-assets>
 
-    <!-- The explicit wrapping sphere primitive tag configuration -->
-    <a-videosphere src="#airport-arrival" id="skybox" rotation="0 -90 0"></a-videosphere>
+    <!-- Enforcing a true 360 wrapping sphere box model -->
+    <a-sky id="skybox" src="#airport-arrival" radius="5000" rotation="0 -90 0"></a-sky>
 
     <a-ring position="0 1.5 -3" radius-inner="0.15" radius-outer="0.18" color="#FFF" drawer-trigger
             animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 1200; loop: true">
