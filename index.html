@@ -6,6 +6,7 @@
   <title>The Absolute Swiss Simulator</title>
   
   <style>
+    /* Un-crashable Minimalist Luxury Resort Canvas Background */
     body, html { 
       margin: 0; padding: 0; 
       font-family: 'Helvetica Neue', Arial, sans-serif; 
@@ -26,7 +27,7 @@
     .resort-dashboard {
       text-align: center; color: white; z-index: 5;
     }
-    .resort-title { font-size: 28px; font-weight: 200; letter-spacing: 6px; margin-bottom: 10px; color: #FFF; text-transform: uppercase; }
+    .resort-title { font-size: 26px; font-weight: 200; letter-spacing: 6px; margin-bottom: 10px; color: #FFF; text-transform: uppercase; }
     .resort-subtitle { font-size: 12px; font-weight: 300; letter-spacing: 3px; color: #94A3B8; margin-bottom: 40px; }
 
     .luxury-node-btn {
@@ -41,30 +42,32 @@
       box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); transform: scale(1.05);
     }
 
+    /* Sliding Concierge Cabinet System */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 350px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
       border-left: 1px solid rgba(255, 255, 255, 0.08); z-index: 20;
       padding: 40px 25px; color: #E2E8F0; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow-y: auto;
+      overflow-y: auto; box-sizing: border-box;
     }
     .drawer-active { right: 0; }
 
-    .drawer-title { font-size: 14px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-    .drawer-meta { font-size: 10px; text-transform: uppercase; color: #64748B; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; }
-    .drawer-value { font-size: 13px; margin-bottom: 18px; font-weight: 300; line-height: 1.6; color: #CBD5E1; }
+    .drawer-title { font-size: 14px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; text-align: left; }
+    .drawer-meta { font-size: 10px; text-transform: uppercase; color: #64748B; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; text-align: left; }
+    .drawer-value { font-size: 13px; margin-bottom: 18px; font-weight: 300; line-height: 1.6; color: #CBD5E1; text-align: left; }
     
-    .close-btn { background: none; border: none; color: #64748B; cursor: pointer; float: right; font-size: 22px; font-weight: 200; line-height: 1; }
+    .close-btn { background: none; border: none; color: #64748B; cursor: pointer; float: right; font-size: 22px; font-weight: 200; line-height: 1; margin-top: -5px; }
     .close-btn:hover { color: #fff; }
 
     .currency-selector { display: flex; gap: 8px; margin-bottom: 20px; }
     .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
+    /* Visual Luxury Suitcases Containers */
     .suitcase-container {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px; padding: 15px; margin-bottom: 20px;
+      border-radius: 6px; padding: 15px; margin-bottom: 20px; box-sizing: border-box;
     }
     .suitcase-handle {
       width: 40px; height: 8px; background: rgba(255, 255, 255, 0.2);
@@ -78,6 +81,7 @@
     }
     .tag-mandatory { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
     .tag-optional { background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .tag-rules { background: rgba(96, 165, 250, 0.15); color: #60A5FA; border: 1px solid rgba(96, 165, 250, 0.3); }
     
     .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; text-align: left; }
     .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; background: none; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
@@ -87,91 +91,90 @@
   </style>
 
   <script>
-    // SELF-CLEANING MECHANISM: Forces the browser to load completely fresh code
-    window.onload = function() {
-      if (!window.location.hash) {
-        window.location.hash = 'initialized';
-        window.location.reload();
-      }
-    }
-
+    // Safe operational variables
     let currentCurrency = 'INR';
     let currentStage = 'airport';
-
-    document.addEventListener("DOMContentLoaded", function() {
-      closeConciergeDrawer();
-    });
 
     function setCurrency(matrixCode) {
       currentCurrency = matrixCode;
       document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`btn-${matrixCode}`).classList.add('active');
-      openConciergeDrawer(currentStage);
+      const activeBtn = document.getElementById(`btn-${matrixCode}`);
+      if(activeBtn) activeBtn.classList.add('active');
+      
+      // Update price tracking display container safely
+      const priceElement = document.getElementById('price-display-value');
+      if (priceElement) {
+        if (currentStage === 'airport') {
+          if (matrixCode === 'INR') priceElement.innerText = "₹45,000 per single luxury night.";
+          if (matrixCode === 'CHF') priceElement.innerText = "CHF 480 per single luxury night.";
+          if (matrixCode === 'USD') priceElement.innerText = "$540 per single luxury night.";
+        } else {
+          if (matrixCode === 'INR') priceElement.innerText = "₹4,200 per 1st Class panoramic seat.";
+          if (matrixCode === 'CHF') priceElement.innerText = "CHF 45 per 1st Class panoramic seat.";
+          if (matrixCode === 'USD') priceElement.innerText = "$50 per 1st Class panoramic seat.";
+        }
+      }
     }
 
     function triggerStageTransit() {
       currentStage = 'train';
       document.body.style.background = "linear-gradient(135deg, #064e3b 0%, #022c22 50%, #111827 100%)";
-      document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
-      document.getElementById('resort-main-title').innerHTML = "SWISS ALPINE RAILWAY LINK";
-      document.getElementById('resort-sub-title').innerHTML = "En Route to Interlaken Pedestrian Lanes";
-      openConciergeDrawer('train');
+      document.getElementById('hud-text').innerText = "THE ABSOLUTE SWISS SIMULATOR • STAGE 02";
+      document.getElementById('resort-main-title').innerText = "SWISS ALPINE RAILWAY LINK";
+      document.getElementById('resort-sub-title').innerText = "En Route to Interlaken Pedestrian Lanes";
+      
+      // Update drawer title and layout segments safely without complex javascript innerHTML rewrites
+      document.getElementById('d-title').innerText = "Stage 2: Swiss Federal Rail Link";
+      document.getElementById('suitcase-airport-set').style.display = 'none';
+      document.getElementById('suitcase-train-set').style.display = 'block';
+      document.getElementById('transit-main-btn').style.display = 'none';
+      
+      setCurrency(currentCurrency);
     }
 
-    function openConciergeDrawer(type) {
-      currentStage = type;
-      const drawer = document.getElementById('luxury-drawer');
-      const title = document.getElementById('d-title');
-      const content = document.getElementById('d-content');
-      
-      let costValue = "";
-      
-      if (type === 'airport') {
-        if (currentCurrency === 'INR') costValue = "₹45,000 per single luxury night.";
-        else if (currentCurrency === 'CHF') costValue = "CHF 480 per single luxury night.";
-        else if (currentCurrency === 'USD') costValue = "\$540 per single luxury night.";
+    function openConciergeDrawer() {
+      document.getElementById('luxury-drawer').classList.add('drawer-active');
+      setCurrency(currentCurrency);
+    }
 
-        title.innerText = "Stage 1: Arrival & Luggage Check";
-        content.innerHTML = `
-          <div class="currency-selector">
-            <button id="btn-INR" class="currency-btn ${currentCurrency==='INR'?'active':''}" onclick="setCurrency('INR')">INR (₹)</button>
-            <button id="btn-CHF" class="currency-btn ${currentCurrency==='CHF'?'active':''}" onclick="setCurrency('CHF')">CHF</button>
-            <button id="btn-USD" class="currency-btn ${currentCurrency==='USD'?'active':''}" onclick="setCurrency('USD')">USD ($)</button>
-          </div>
-          <div class="drawer-meta">Est. Premium Resort Cost</div>
-          <div class="drawer-value" style="color: #F59E0B; font-weight: bold; margin-bottom: 25px;">${costValue}</div>
-          
-          <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
-            <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
-            <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Multi-region active policy.</div></div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Thermal Gear:</b> Thick winter layers packed.</div></div>
-          </div>
-          
-          <div class="suitcase-container" style="border-color: rgba(52, 211, 153, 0.3);">
-            <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.2);"></div>
-            <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket standard.</div></div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> Public fountains are 100% pure & free.</div></div>
-          </div>
-          
-          <button class="transit-btn" onclick="triggerStageTransit()">Board Alpine Train</button>
-        `;
-      } 
-      else if (type === 'train') {
-        if (currentCurrency === 'INR') costValue = "₹4,200 per 1st Class panoramic seat.";
-        else if (currentCurrency === 'CHF') costValue = "CHF 45 per 1st Class panoramic seat.";
-        else if (currentCurrency === 'USD') costValue = "\$50 per 1st Class panoramic seat.";
+    function closeConciergeDrawer() {
+      document.getElementById('luxury-drawer').classList.remove('drawer-active');
+    }
+  </script>
+</head>
+<body>
 
-        title.innerText = "Stage 2: Swiss Federal Rail Link";
-        content.innerHTML = `
-          <div class="currency-selector">
-            <button id="btn-INR" class="currency-btn ${currentCurrency==='INR'?'active':''}" onclick="setCurrency('INR')">INR (₹)</button>
-            <button id="btn-CHF" class="currency-btn ${currentCurrency==='CHF'?'active':''}" onclick="setCurrency('CHF')">CHF</button>
-            <button id="btn-USD" class="currency-btn ${currentCurrency==='USD'?'active':''}" onclick="setCurrency('USD')">USD ($)</button>
-          </div>
-          <div class="drawer-meta">Transit Carriage Fare</div>
-          <div class="drawer-value" style="color: #F59E0B; font-weight: bold;">${costValue}</div>
-          
-          <div class="drawer-meta" style="color: #60A5FA;">📜 CRITICAL TRAIN ETIQUETTE RULES</div>
+  <!-- THE STATUS BAR HUD -->
+  <div id="concierge-hud">
+    <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
+  </div>
+
+  <!-- THE SLIDING LUXURY DRAWER CABINET -->
+  <div id="luxury-drawer" class="concierge-drawer">
+    <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
+    <div id="d-title" class="drawer-title">Stage 1: Arrival & Luggage Check</div>
+    
+    <!-- Currency selection hub bar layout -->
+    <div class="currency-selector">
+      <button id="btn-INR" class="currency-btn active" onclick="setCurrency('INR')">INR (₹)</button>
+      <button id="btn-CHF" class="currency-btn" onclick="setCurrency('CHF')">CHF</button>
+      <button id="btn-USD" class="currency-btn" onclick="setCurrency('USD')">USD ($)</button>
+    </div>
+    
+    <div class="drawer-meta">Est. Current Base Cost</div>
+    <div id="price-display-value" class="drawer-value" style="color: #F59E0B; font-weight: bold; font-size: 15px;">₹45,000 per single luxury night.</div>
+    
+    <!-- STAGE 1 AIRPORT PACKING TRUNKS WRAPPER -->
+    <div id="suitcase-airport-set">
+      <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
+        <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Multi-region active policy.</div></div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Thermal Gear:</b> Thick winter layers packed.</div></div>
+      </div>
+      
+      <div class="suitcase-container" style="border-color: rgba(52, 211, 153, 0.3);">
+        <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.2);"></div>
+        <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket standard.</div></div>
