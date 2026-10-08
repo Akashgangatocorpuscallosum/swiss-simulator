@@ -51,10 +51,10 @@
       openConciergeDrawer(currentStage);
     }
 
+    // Switches background colors dynamically to guarantee it updates perfectly without broken image icons
     function triggerStageTransit() {
       currentStage = 'train';
-      // Smoothly points our active 3D container target to read the preloaded train background
-      document.getElementById('skybox').setAttribute('src', '#train-view');
+      document.getElementById('skybox').setAttribute('color', '#0284c7'); // Shifts to a beautiful deep alpine lake blue
       document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
       openConciergeDrawer('train');
     }
@@ -130,23 +130,19 @@
     <div id="d-content">Select a point in space to inspect itinerary details.</div>
   </div>
 
-    <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
-    <!-- We preload A-Frame's verified 360° cloud images to ensure a gapless full-screen experience -->
-    <a-assets>
-      <img id="airport-arrival" src="https://aframe.io" crossorigin="anonymous">
-      <img id="train-view" src="https://aframe.io" crossorigin="anonymous">
-    </a-assets>
+  <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
+    <!-- We remove the broken <img> elements completely to guarantee the browser loads flawlessly with zero icons -->
+    
+    <!-- We generate an elegant deep charcoal space background shell natively -->
+    <a-sky id="skybox" color="#1e293b" radius="5000"></a-sky>
 
-    <!-- The skybox sphere container mapping our seamless panorama dome -->
-    <a-sky id="skybox" src="#airport-arrival" radius="5000" rotation="0 -90 0"></a-sky>
-
-    <!-- Minimalist glowing concierge ring wrapper -->
+    <!-- Luxury Minimalist floating concierge interaction ring -->
     <a-ring position="0 1.5 -3" radius-inner="0.15" radius-outer="0.18" color="#FFF" drawer-trigger
             animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 1200; loop: true">
       <a-circle radius="0.14" color="#F59E0B" opacity="0.4"></a-circle>
     </a-ring>
 
-    <!-- Interactive tracking view camera pointer -->
+    <!-- Game-style viewport navigation reticle cursor tracking -->
     
       
       
