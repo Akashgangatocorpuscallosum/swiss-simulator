@@ -6,16 +6,15 @@
   <title>The Absolute Swiss Simulator</title>
   
   <style>
-    /* Premium Luxury Travel Gradient Canvas - Bypasses all WebGL Graphics Blocks */
     body, html { 
       margin: 0; padding: 0; 
       font-family: 'Helvetica Neue', Arial, sans-serif; 
       height: 100%; overflow: hidden;
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
       display: flex; justify-content: center; align-items: center;
+      transition: background 0.8s ease;
     }
     
-    /* Elegant Top Status Bar */
     #concierge-hud {
       position: absolute; top: 30px; left: 30px; z-index: 10;
       background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
@@ -24,14 +23,12 @@
       text-transform: uppercase;
     }
 
-    /* Central Luxury Interactive Node Dashboard */
     .resort-dashboard {
       text-align: center; color: white; z-index: 5;
     }
     .resort-title { font-size: 28px; font-weight: 200; letter-spacing: 6px; margin-bottom: 10px; color: #FFF; text-transform: uppercase; }
     .resort-subtitle { font-size: 12px; font-weight: 300; letter-spacing: 3px; color: #94A3B8; margin-bottom: 40px; }
 
-    /* Clean Glowing Interaction Button */
     .luxury-node-btn {
       background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.3);
       color: #FFF; padding: 18px 40px; font-size: 12px; letter-spacing: 3px;
@@ -44,24 +41,23 @@
       box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); transform: scale(1.05);
     }
 
-    /* Sliding Side Concierge Drawer System */
     .concierge-drawer {
-      position: absolute; top: 0; right: -360px; width: 310px; height: 100%;
+      position: absolute; top: 0; right: -380px; width: 320px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
       border-left: 1px solid rgba(255, 255, 255, 0.08); z-index: 20;
-      padding: 50px 30px; color: #E2E8F0; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 40px 25px; color: #E2E8F0; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
     }
     .drawer-active { right: 0; }
 
-    .drawer-title { font-size: 15px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-    .drawer-meta { font-size: 10px; text-transform: uppercase; color: #64748B; letter-spacing: 1px; margin-bottom: 6px; font-weight: bold; }
-    .drawer-value { font-size: 13px; margin-bottom: 22px; font-weight: 300; line-height: 1.6; color: #CBD5E1; }
+    .drawer-title { font-size: 14px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+    .drawer-meta { font-size: 10px; text-transform: uppercase; color: #64748B; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; }
+    .drawer-value { font-size: 13px; margin-bottom: 18px; font-weight: 300; line-height: 1.6; color: #CBD5E1; }
     
     .close-btn { background: none; border: none; color: #64748B; cursor: pointer; float: right; font-size: 22px; font-weight: 200; line-height: 1; }
     .close-btn:hover { color: #fff; }
 
-    /* Currency Switcher Design */
-    .currency-selector { display: flex; gap: 8px; margin-bottom: 25px; }
+    .currency-selector { display: flex; gap: 8px; margin-bottom: 20px; }
     .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
@@ -82,7 +78,6 @@
 
     function triggerStageTransit() {
       currentStage = 'train';
-      // Smoothly changes the CSS canvas look to a deep emerald mountain lake color scheme code array
       document.body.style.background = "linear-gradient(135deg, #064e3b 0%, #022c22 50%, #111827 100%)";
       document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
       document.getElementById('resort-main-title').innerHTML = "SWISS ALPINE RAILWAY LINK";
@@ -99,11 +94,11 @@
       let costValue = "";
       
       if (type === 'airport') {
-        if (currentCurrency === 'INR') costValue = "₹45,000 per residency night.";
-        else if (currentCurrency === 'CHF') costValue = "CHF 480 per residency night.";
-        else if (currentCurrency === 'USD') costValue = "\$540 per residency night.";
+        if (currentCurrency === 'INR') costValue = "₹45,000 per single luxury night.";
+        else if (currentCurrency === 'CHF') costValue = "CHF 480 per single luxury night.";
+        else if (currentCurrency === 'USD') costValue = "\$540 per single luxury night.";
 
-        title.innerText = "Stage 1: Arrival Terminal Curation";
+        title.innerText = "Stage 1: Arrival & Luggage Check";
         content.innerHTML = `
           <div class="currency-selector">
             <button id="btn-INR" class="currency-btn ${currentCurrency==='INR'?'active':''}" onclick="setCurrency('INR')">INR (₹)</button>
@@ -111,30 +106,34 @@
             <button id="btn-USD" class="currency-btn ${currentCurrency==='USD'?'active':''}" onclick="setCurrency('USD')">USD ($)</button>
           </div>
           <div class="drawer-meta">Est. Premium Resort Cost</div>
-          <div class="drawer-value" style="color: #F59E0B; font-weight: 400; font-size: 15px;">${costValue}</div>
-          <div class="drawer-meta" style="color: #EF4444;">🛑 MANDATORY Packing Check</div>
-          <div class="drawer-value">&bull; Swiss Travel Pass QR Code<br>&bull; Multi-region Travel Medical Insurance</div>
-          <div class="drawer-meta" style="color: #34D399;">🍏 OPTIONAL Convenience</div>
-          <div class="drawer-value">&bull; Universal Type J Power Adapter<br>&bull; Refillable Water Flask (Swiss public fountain water is pristine & 100% free)</div>
+          <div class="drawer-value" style="color: #F59E0B; font-weight: bold;">${costValue}</div>
+          
+          <div class="drawer-meta" style="color: #EF4444;">🛑 MANDATORY TRUNK CHECK (Must Bring)</div>
+          <div class="drawer-value">&bull; Swiss Travel Pass QR Code<br>&bull; Multi-region Travel Medical Insurance<br>&bull; Solid Winter Thermal Layers</div>
+          
+          <div class="drawer-meta" style="color: #34D399;">🍏 OPTIONAL LOGISTICS (Can Bring)</div>
+          <div class="drawer-value">&bull; Universal Type J Power Adapter<br>&bull; Empty Water Flask (Swiss public fountain water is 100% pristine & free)</div>
+          
           <button class="transit-btn" onclick="triggerStageTransit()">Board Alpine Train</button>
         `;
       } 
       else if (type === 'train') {
-        if (currentCurrency === 'INR') costValue = "₹4,200 per 1st Class Cabin Seat.";
-        else if (currentCurrency === 'CHF') costValue = "CHF 45 per 1st Class Cabin Seat.";
-        else if (currentCurrency === 'USD') costValue = "\$50 per 1st Class Cabin Seat.";
+        if (currentCurrency === 'INR') costValue = "₹4,200 per 1st Class panoramic seat.";
+        else if (currentCurrency === 'CHF') costValue = "CHF 45 per 1st Class panoramic seat.";
+        else if (currentCurrency === 'USD') costValue = "\$50 per 1st Class panoramic seat.";
 
-        title.innerText = "Stage 2: Rail Transit Curation";
+        title.innerText = "Stage 2: Swiss Federal Rail Link";
         content.innerHTML = `
           <div class="currency-selector">
             <button id="btn-INR" class="currency-btn ${currentCurrency==='INR'?'active':''}" onclick="setCurrency('INR')">INR (₹)</button>
             <button id="btn-CHF" class="currency-btn ${currentCurrency==='CHF'?'active':''}" onclick="setCurrency('CHF')">CHF</button>
             <button id="btn-USD" class="currency-btn ${currentCurrency==='USD'?'active':''}" onclick="setCurrency('USD')">USD ($)</button>
           </div>
-          <div class="drawer-meta">Transit Carriage Cost</div>
-          <div class="drawer-value" style="color: #F59E0B; font-weight: 400; font-size: 15px;">${costValue}</div>
-          <div class="drawer-meta" style="color: #60A5FA;">📜 Strict Cultural Law</div>
-          <div class="drawer-value">Keep conversational volume whisper-quiet in designated Quiet Coach Zones. Never obstruct cabin entrances with heavy luggage.</div>
+          <div class="drawer-meta">Transit Carriage Fare</div>
+          <div class="drawer-value" style="color: #F59E0B; font-weight: bold;">${costValue}</div>
+          
+          <div class="drawer-meta" style="color: #60A5FA;">📜 CRITICAL TRAIN ETIQUETTE RULES</div>
+          <div class="drawer-value">&bull; Keep voices to a complete whisper inside marked "Quiet Zones".<br>&bull; Always wait for passengers to exit completely before stepping onto the carriage lane.<br>&bull; Store large family bags strictly in the bottom metal luggage decks.</div>
         `;
       }
       drawer.classList.add('drawer-active');
@@ -147,19 +146,16 @@
 </head>
 <body>
 
-  <!-- THE EXECUTIVE HUD OVERLAY -->
   <div id="concierge-hud">
     <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
   </div>
 
-  <!-- THE SLIDING CONCIERGE DRAWER COMPONENT -->
   <div id="luxury-drawer" class="concierge-drawer">
     <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
     <div id="d-title" class="drawer-title">Concierge Desk</div>
     <div id="d-content">Select parameters to initialize.</div>
   </div>
 
-  <!-- CENTRAL MINIMALIST LUXURY INTERACTION DECK -->
   <div class="resort-dashboard">
     <div id="resort-main-title" class="resort-title">ZÜRICH INTERNATIONAL HUB</div>
     <div id="resort-sub-title" class="resort-subtitle">Premium Gateway & Travel Residency Suite</div>
