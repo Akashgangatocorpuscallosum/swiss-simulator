@@ -41,7 +41,6 @@
       box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); transform: scale(1.05);
     }
 
-    /* Upgraded Drawer width to cleanly hold our luxury visual suitcases */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 350px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
@@ -62,20 +61,14 @@
     .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
-    /* Clean Luxury Suitcase CSS Design Blocks */
     .suitcase-container {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 20px;
-      position: relative;
+      border-radius: 6px; padding: 15px; margin-bottom: 20px;
     }
     .suitcase-handle {
-      width: 40px; height: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: -23px auto 15px auto;
-      border-radius: 4px 4px 0 0;
+      width: 40px; height: 8px; background: rgba(255, 255, 255, 0.2);
+      margin: -23px auto 15px auto; border-radius: 4px 4px 0 0;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .suitcase-tag {
@@ -86,16 +79,28 @@
     .tag-mandatory { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
     .tag-optional { background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
     
-    .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; }
-    .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
+    .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; text-align: left; }
+    .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; background: none; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
 
     .transit-btn { background: #D00000; border: none; color: white; width: 100%; padding: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; transition: background 0.3s; }
     .transit-btn:hover { background: #A00000; }
   </style>
 
   <script>
+    // SELF-CLEANING MECHANISM: Forces the browser to load completely fresh code
+    window.onload = function() {
+      if (!window.location.hash) {
+        window.location.hash = 'initialized';
+        window.location.reload();
+      }
+    }
+
     let currentCurrency = 'INR';
     let currentStage = 'airport';
+
+    document.addEventListener("DOMContentLoaded", function() {
+      closeConciergeDrawer();
+    });
 
     function setCurrency(matrixCode) {
       currentCurrency = matrixCode;
@@ -136,21 +141,19 @@
           <div class="drawer-meta">Est. Premium Resort Cost</div>
           <div class="drawer-value" style="color: #F59E0B; font-weight: bold; margin-bottom: 25px;">${costValue}</div>
           
-          <!-- VISUAL SUITCASE 1: MANDATORY TRUNK -->
           <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
             <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
             <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> Digital QR Pass pre-loaded on device link.</div></div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Active multi-region European coverage paper docs.</div></div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Thermal Gear:</b> Heavy layers required for high altitude glacier domains.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Multi-region active policy.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Thermal Gear:</b> Thick winter layers packed.</div></div>
           </div>
           
-          <!-- VISUAL SUITCASE 2: OPTIONAL TRUNK -->
           <div class="suitcase-container" style="border-color: rgba(52, 211, 153, 0.3);">
             <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.2);"></div>
             <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Standard Swiss universal three-prong power socket pin.</div></div>
-            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> For public mountain fountains. Pure Alpine tap water is 100% free.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket standard.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> Public fountains are 100% pure & free.</div></div>
           </div>
           
           <button class="transit-btn" onclick="triggerStageTransit()">Board Alpine Train</button>
@@ -171,3 +174,4 @@
           <div class="drawer-meta">Transit Carriage Fare</div>
           <div class="drawer-value" style="color: #F59E0B; font-weight: bold;">${costValue}</div>
           
+          <div class="drawer-meta" style="color: #60A5FA;">📜 CRITICAL TRAIN ETIQUETTE RULES</div>
