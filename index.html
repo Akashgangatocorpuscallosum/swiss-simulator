@@ -41,8 +41,9 @@
       box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); transform: scale(1.05);
     }
 
+    /* Upgraded Drawer width to cleanly hold our luxury visual suitcases */
     .concierge-drawer {
-      position: absolute; top: 0; right: -380px; width: 320px; height: 100%;
+      position: absolute; top: 0; right: -420px; width: 350px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
       border-left: 1px solid rgba(255, 255, 255, 0.08); z-index: 20;
       padding: 40px 25px; color: #E2E8F0; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -60,6 +61,33 @@
     .currency-selector { display: flex; gap: 8px; margin-bottom: 20px; }
     .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
+
+    /* Clean Luxury Suitcase CSS Design Blocks */
+    .suitcase-container {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .suitcase-handle {
+      width: 40px; height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: -23px auto 15px auto;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .suitcase-tag {
+      font-size: 9px; font-weight: bold; letter-spacing: 1px;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
+      display: inline-block; margin-bottom: 10px;
+    }
+    .tag-mandatory { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .tag-optional { background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    
+    .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; }
+    .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
 
     .transit-btn { background: #D00000; border: none; color: white; width: 100%; padding: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; transition: background 0.3s; }
     .transit-btn:hover { background: #A00000; }
@@ -106,13 +134,24 @@
             <button id="btn-USD" class="currency-btn ${currentCurrency==='USD'?'active':''}" onclick="setCurrency('USD')">USD ($)</button>
           </div>
           <div class="drawer-meta">Est. Premium Resort Cost</div>
-          <div class="drawer-value" style="color: #F59E0B; font-weight: bold;">${costValue}</div>
+          <div class="drawer-value" style="color: #F59E0B; font-weight: bold; margin-bottom: 25px;">${costValue}</div>
           
-          <div class="drawer-meta" style="color: #EF4444;">🛑 MANDATORY TRUNK CHECK (Must Bring)</div>
-          <div class="drawer-value">&bull; Swiss Travel Pass QR Code<br>&bull; Multi-region Travel Medical Insurance<br>&bull; Solid Winter Thermal Layers</div>
+          <!-- VISUAL SUITCASE 1: MANDATORY TRUNK -->
+          <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
+            <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
+            <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> Digital QR Pass pre-loaded on device link.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Active multi-region European coverage paper docs.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Thermal Gear:</b> Heavy layers required for high altitude glacier domains.</div></div>
+          </div>
           
-          <div class="drawer-meta" style="color: #34D399;">🍏 OPTIONAL LOGISTICS (Can Bring)</div>
-          <div class="drawer-value">&bull; Universal Type J Power Adapter<br>&bull; Empty Water Flask (Swiss public fountain water is 100% pristine & free)</div>
+          <!-- VISUAL SUITCASE 2: OPTIONAL TRUNK -->
+          <div class="suitcase-container" style="border-color: rgba(52, 211, 153, 0.3);">
+            <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.2);"></div>
+            <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Standard Swiss universal three-prong power socket pin.</div></div>
+            <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> For public mountain fountains. Pure Alpine tap water is 100% free.</div></div>
+          </div>
           
           <button class="transit-btn" onclick="triggerStageTransit()">Board Alpine Train</button>
         `;
@@ -132,35 +171,3 @@
           <div class="drawer-meta">Transit Carriage Fare</div>
           <div class="drawer-value" style="color: #F59E0B; font-weight: bold;">${costValue}</div>
           
-          <div class="drawer-meta" style="color: #60A5FA;">📜 CRITICAL TRAIN ETIQUETTE RULES</div>
-          <div class="drawer-value">&bull; Keep voices to a complete whisper inside marked "Quiet Zones".<br>&bull; Always wait for passengers to exit completely before stepping onto the carriage lane.<br>&bull; Store large family bags strictly in the bottom metal luggage decks.</div>
-        `;
-      }
-      drawer.classList.add('drawer-active');
-    }
-
-    function closeConciergeDrawer() {
-      document.getElementById('luxury-drawer').classList.remove('drawer-active');
-    }
-  </script>
-</head>
-<body>
-
-  <div id="concierge-hud">
-    <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
-  </div>
-
-  <div id="luxury-drawer" class="concierge-drawer">
-    <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
-    <div id="d-title" class="drawer-title">Concierge Desk</div>
-    <div id="d-content">Select parameters to initialize.</div>
-  </div>
-
-  <div class="resort-dashboard">
-    <div id="resort-main-title" class="resort-title">ZÜRICH INTERNATIONAL HUB</div>
-    <div id="resort-sub-title" class="resort-subtitle">Premium Gateway & Travel Residency Suite</div>
-    <button class="luxury-node-btn" onclick="openConciergeDrawer(currentStage)">Open Concierge Menu</button>
-  </div>
-
-</body>
-</html>
