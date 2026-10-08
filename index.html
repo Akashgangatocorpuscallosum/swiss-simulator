@@ -53,9 +53,9 @@
 
     function triggerStageTransit() {
       currentStage = 'train';
-      // Dynamically updates our procedural shapes to signal we have transited down to Stage 2!
-      document.getElementById('skybox').setAttribute('color', '#0284c7'); // Soft blue sky
-      document.getElementById('transit-mountain').setAttribute('color', '#F59E0B'); // Glowing peak
+      // Transitions background lighting and vector targets seamlessly to gold sun rays
+      document.getElementById('ambient-sun').setAttribute('light', 'color: #fef08a; intensity: 1.8');
+      document.getElementById('transit-mountain').setAttribute('color', '#F59E0B'); 
       document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
       openConciergeDrawer('train');
     }
@@ -133,20 +133,23 @@
 
   <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
     
-    <!-- WE DEFINE AN EXPLICIT BACKGROUND COLOR INSTEAD OF A PICTURE FILE -->
-    <a-sky id="skybox" color="#1e293b" radius="5000"></a-sky>
+    <!-- HIGH INTENSITY 3D VECTOR STAGE LIGHTS (Banishes dark rendering screen errors) -->
+    
+    
 
-    <!-- PROCEDURAL ALPS: We code a physical 3D cone primitive directly in front of the traveler -->
-    <a-cone id="transit-mountain" position="0 0 -8" radius-bottom="4" height="6" color="#475569"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 20000; easing: linear"></a-cone>
+    <a-sky id="skybox" color="#cbd5e1" radius="5000"></a-sky>
 
-    <!-- Minimalist glowing interaction ring node -->
-    <a-ring position="0 1.5 -3" radius-inner="0.15" radius-outer="0.18" color="#FFF" drawer-trigger
+    <!-- PROCEDURAL MATRIX: Spinning geometric layout structures mapping out space boundaries -->
+    <a-cone id="transit-mountain" position="0 -1.5 -6" radius-bottom="3.5" height="5" color="#38bdf8"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 22000; easing: linear"></a-cone>
+
+    <!-- Glowing interaction console ring -->
+    <a-ring position="0 1.5 -2.5" radius-inner="0.12" radius-outer="0.15" color="#FFF" drawer-trigger
             animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 1200; loop: true">
-      <a-circle radius="0.14" color="#F59E0B" opacity="0.4"></a-circle>
+      <a-circle radius="0.11" color="#F59E0B" opacity="0.5"></a-circle>
     </a-ring>
 
-    <!-- Game-style cursor crosshair pointer tracking -->
+    <!-- Focus crosshair reticle cursor controller -->
     
       
       
