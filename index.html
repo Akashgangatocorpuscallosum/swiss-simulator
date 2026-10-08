@@ -6,7 +6,7 @@
   <title>The Absolute Swiss Simulator</title>
   
   <style>
-    /* Un-crashable Minimalist Luxury Resort Canvas Background */
+    /* Premium Luxury Resort Background Layout Grid */
     body, html { 
       margin: 0; padding: 0; 
       font-family: 'Helvetica Neue', Arial, sans-serif; 
@@ -42,7 +42,7 @@
       box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); transform: scale(1.05);
     }
 
-    /* Sliding Concierge Cabinet System */
+    /* Sliding Drawer Layout Specifications */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 350px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
@@ -63,22 +63,15 @@
     .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
-    /* Visual Luxury Suitcases Containers */
     .suitcase-container {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 6px; padding: 15px; margin-bottom: 20px; box-sizing: border-box;
     }
     .suitcase-handle {
       width: 40px; height: 8px; background: rgba(255, 255, 255, 0.2);
-      margin: -23px auto 15px auto; border-radius: 4px 4px 0 0;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: -23px auto 15px auto; border-radius: 4px 4px 0 0; border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .suitcase-tag {
-      font-size: 9px; font-weight: bold; letter-spacing: 1px;
-      text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
-      display: inline-block; margin-bottom: 10px;
-    }
+    .suitcase-tag { font-size: 9px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
     .tag-mandatory { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
     .tag-optional { background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
     .tag-rules { background: rgba(96, 165, 250, 0.15); color: #60A5FA; border: 1px solid rgba(96, 165, 250, 0.3); }
@@ -91,7 +84,6 @@
   </style>
 
   <script>
-    // Safe operational variables
     let currentCurrency = 'INR';
     let currentStage = 'airport';
 
@@ -101,7 +93,6 @@
       const activeBtn = document.getElementById(`btn-${matrixCode}`);
       if(activeBtn) activeBtn.classList.add('active');
       
-      // Update price tracking display container safely
       const priceElement = document.getElementById('price-display-value');
       if (priceElement) {
         if (currentStage === 'airport') {
@@ -123,7 +114,6 @@
       document.getElementById('resort-main-title').innerText = "SWISS ALPINE RAILWAY LINK";
       document.getElementById('resort-sub-title').innerText = "En Route to Interlaken Pedestrian Lanes";
       
-      // Update drawer title and layout segments safely without complex javascript innerHTML rewrites
       document.getElementById('d-title').innerText = "Stage 2: Swiss Federal Rail Link";
       document.getElementById('suitcase-airport-set').style.display = 'none';
       document.getElementById('suitcase-train-set').style.display = 'block';
@@ -144,17 +134,16 @@
 </head>
 <body>
 
-  <!-- THE STATUS BAR HUD -->
+  <!-- THE HUD DISPLAY -->
   <div id="concierge-hud">
     <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
   </div>
 
-  <!-- THE SLIDING LUXURY DRAWER CABINET -->
+  <!-- LUXURY DRAWER SYSTEM -->
   <div id="luxury-drawer" class="concierge-drawer">
     <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
     <div id="d-title" class="drawer-title">Stage 1: Arrival & Luggage Check</div>
     
-    <!-- Currency selection hub bar layout -->
     <div class="currency-selector">
       <button id="btn-INR" class="currency-btn active" onclick="setCurrency('INR')">INR (₹)</button>
       <button id="btn-CHF" class="currency-btn" onclick="setCurrency('CHF')">CHF</button>
@@ -164,13 +153,12 @@
     <div class="drawer-meta">Est. Current Base Cost</div>
     <div id="price-display-value" class="drawer-value" style="color: #F59E0B; font-weight: bold; font-size: 15px;">₹45,000 per single luxury night.</div>
     
-    <!-- STAGE 1 AIRPORT PACKING TRUNKS WRAPPER -->
     <div id="suitcase-airport-set">
       <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
         <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
         <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
         <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Multi-region active policy.</div></div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Active multi-region active policy.</div></div>
         <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Thermal Gear:</b> Thick winter layers packed.</div></div>
       </div>
       
@@ -178,3 +166,11 @@
         <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.2);"></div>
         <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
         <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket standard.</div></div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> Public fountains are 100% pure & free.</div></div>
+      </div>
+    </div>
+
+    <div id="suitcase-train-set" style="display: none;">
+      <div class="suitcase-container" style="border-color: rgba(96, 165, 250, 0.4);">
+        <div class="suitcase-handle" style="background: rgba(96, 165, 250, 0.2);"></div>
+        <div class="suitcase-tag tag-rules">Trunk 03: Train Etiquette</div>
