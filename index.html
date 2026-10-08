@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Absolute Swiss Simulator</title>
+  <!-- Loading our lightweight 3D graphic layers -->
+  <script src="https://aframe.io"></script>
+  
+  <style>
+    /* Luxury Minimalist Typography & Reset */
+    body, html { margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden; }
+    
+    /* Elegant Bottom Status Bar */
+    #concierge-hud {
+      position: absolute; bottom: 20px; left: 20px; z-index: 10;
+      background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px 25px;
+      color: #fff; border-radius: 4px; letter-spacing: 2px; font-size: 12px;
+    }
+
+    /* Sliding Side Drawer System */
+    .concierge-drawer {
+      position: absolute; top: 0; right: -350px; width: 300px; height: 100%;
+      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px);
+      border-left: 1px solid rgba(255, 255, 255, 0.1); z-index: 20;
+      padding: 40px 25px; color: #E2E8F0; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drawer-active { right: 0; } /* Triggers the smooth slide-in */
+
+    /* Typography inside the Luxury Drawer */
+    .drawer-title { font-size: 16px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 25px; text-transform: uppercase; }
+    .drawer-meta { font-size: 11px; text-transform: uppercase; color: #94A3B8; letter-spacing: 1px; margin-bottom: 5px; }
+    .drawer-value { font-size: 14px; margin-bottom: 20px; font-weight: 400; line-height: 1.6; }
+    
+    /* Minimalist Close Button */
+    .close-btn { background: none; border: none; color: #94A3B8; cursor: pointer; float: right; font-size: 18px; font-weight: 200; }
+    .close-btn:hover { color: #fff; }
+  </style>
+
+  <script>
+    // System to control our luxury UI drawers from inside the 3D world
+    function openConciergeDrawer(type) {
+      const drawer = document.getElementById('luxury-drawer');
+      const title = document.getElementById('d-title');
+      const content = document.getElementById('d-content');
+      
+      if(type === 'airport') {
+        title.innerText = "Stage 1: Arrival Terminal";
+        content.innerHTML = `
+          <div class="drawer-meta">Current Altitude</div>
+          <div class="drawer-value">432 Meters (Zürich Airport)</div>
+          <div class="drawer-meta">Customs Regulation</div>
+          <div class="drawer-value">Declare cash or goods exceeding 300 CHF per individual family tier.</div>
+          <div class="drawer-meta">Essential Asset</div>
+          <div class="drawer-value">Keep your Swiss Travel Pass QR code active on your phone link. Tap water here is 100% pristine and free.</div>
+        `;
+      }
+      drawer.classList.add('drawer-active');
+    }
+
+    function closeConciergeDrawer() {
+      document.getElementById('luxury-drawer').classList.remove('drawer-active');
+    }
+
+    // Wiring our 3D nodes to communicate with our luxury sliding drawers
+    AFRAME.registerComponent('drawer-trigger', {
+      init: function () {
+        this.el.addEventListener('click', () => { openConciergeDrawer('airport'); });
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- THE BOTTOM CONCIERGE HUD BAR -->
+  <div id="concierge-hud">
+    THE ABSOLUTE SWISS SIMULATOR &bull; HOUR 00:00
+  </div>
+
+  <!-- THE SLIDING LUXURY SIDE DRAWER -->
+  <div id="luxury-drawer" class="concierge-drawer">
+    <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
+    <div id="d-title" class="drawer-title">Concierge Desk</div>
+    <div id="d-content">Select a point in space to inspect itinerary details.</div>
+  </div>
+
+  <!-- THE 3D VIRTUAL SPHERE WORLD -->
+  <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
+    <a-assets>
+      <img id="airport-arrival" src="swiss-pano.jpg">
+    </a-assets>
+
+    <a-sky src="#airport-arrival" rotation="0 -90 0"></a-sky>
+
+    <!-- MINIMALIST GLOWING INTERACTION NODE (White ring with gold aura) -->
+    <a-ring position="0 1.5 -3" radius-inner="0.15" radius-outer="0.18" color="#FFF" drawer-trigger
+            animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 1200; loop: true">
+      <a-circle radius="0.14" color="#F59E0B" opacity="0.4"></a-circle>
+    </a-ring>
+
+    <!-- VISUAL POINTER RETICLE FOR DESKTOP & MOBILE TAP -->
+    
+      
+      
+    
+  </a-scene>
+
+</body>
+</html>
