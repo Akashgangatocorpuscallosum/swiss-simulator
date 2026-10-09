@@ -4,26 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Absolute Swiss Simulator</title>
-  <!-- Loading our core 3D simulation framework securely -->
-  <script src="https://aframe.io"></script>
   
   <style>
+    /* Un-crashable Minimalist Luxury Resort Background Gradient Layout */
     body, html { 
       margin: 0; padding: 0; 
       font-family: 'Helvetica Neue', Arial, sans-serif; 
       height: 100%; width: 100%; overflow: hidden;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+      display: flex; justify-content: center; align-items: center;
+      transition: background 0.8s ease;
     }
     
-    /* Top Left Floating HUD Bar */
+    /* Top Left Floating HUD Status Bar */
     #concierge-hud {
       position: absolute; top: 30px; left: 30px; z-index: 10;
-      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px;
       color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px;
-      text-transform: uppercase; pointer-events: none;
+      text-transform: uppercase;
     }
 
-    /* Sliding Concierge Cabinet Drawer Layout */
+    /* Fixed Screen Centering Container Matrix Layout */
+    .resort-dashboard {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center; color: white; z-index: 5; width: 100%; max-width: 600px;
+    }
+    .resort-title { font-size: 26px; font-weight: 200; letter-spacing: 6px; margin-bottom: 12px; color: #FFF; text-transform: uppercase; }
+    .resort-subtitle { font-size: 12px; font-weight: 300; letter-spacing: 3px; color: #94A3B8; margin-bottom: 40px; text-transform: uppercase; }
+
+    /* Glowing Luxury Interaction Button Target Node */
+    .luxury-node-btn {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #FFF; padding: 18px 45px; font-size: 12px; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer; border-radius: 50px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.05); display: inline-block;
+      transition: all 0.4s ease; outline: none;
+    }
+    .luxury-node-btn:hover {
+      border-color: #F59E0B; background: rgba(245, 158, 11, 0.15);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); transform: scale(1.05);
+    }
+
+    /* Sliding Concierge Cabinet Drawer Layout Architecture */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 360px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
@@ -41,10 +65,10 @@
     .close-btn:hover { color: #fff; }
 
     .currency-selector { display: flex; gap: 8px; margin-bottom: 20px; }
-    .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
+    .currency-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
-    /* Visual Luxury Suitcases */
+    /* Visual Luxury Suitcases Design Blocks */
     .suitcase-container {
       background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 6px; padding: 15px; margin-bottom: 20px; box-sizing: border-box;
@@ -60,6 +84,7 @@
     
     .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; text-align: left; }
     .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
+
     .transit-btn { background: #D00000; border: none; color: white; padding: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; transition: background 0.3s; width: 100%; }
     .transit-btn:hover { background: #A00000; }
   </style>
@@ -90,9 +115,10 @@
 
     function triggerStageTransit() {
       currentStage = 'train';
-      // Dynamically shifts the 3D Panoramic Skybox sphere to an Alpine Green dawn horizon texture
-      document.getElementById('skybox').setAttribute('material', 'topColor: #111827; bottomColor: #064e3b');
+      document.body.style.background = "linear-gradient(135deg, #064e3b 0%, #022c22 50%, #111827 100%)";
       document.getElementById('hud-text').innerText = "THE ABSOLUTE SWISS SIMULATOR • STAGE 02";
+      document.getElementById('resort-main-title').innerText = "SWISS ALPINE RAILWAY LINK";
+      document.getElementById('resort-sub-title').innerText = "En Route to Interlaken Pedestrian Lanes";
       
       document.getElementById('d-title').innerText = "Stage 2: Swiss Federal Rail Link";
       document.getElementById('suitcase-airport-set').style.display = 'none';
@@ -107,6 +133,7 @@
       setCurrency(currentCurrency);
     }
 
+    // Handles native box exit closures cleanly
     function closeConciergeDrawer() {
       document.getElementById('luxury-drawer').classList.remove('drawer-active');
     }
@@ -114,12 +141,12 @@
 </head>
 <body>
 
-  <!-- THE STATUS BAR HUD -->
+  <!-- THE EXECUTIVE STATUS HUD OVERLAY -->
   <div id="concierge-hud">
     <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
   </div>
 
-  <!-- THE SLIDING LUXURY DRAWER CABINET -->
+  <!-- THE SLIDING CONCIERGE DRAWER COMPONENT LAYOUT -->
   <div id="luxury-drawer" class="concierge-drawer">
     <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
     <div id="d-title" class="drawer-title">Stage 1: Arrival & Luggage Check</div>
@@ -133,7 +160,7 @@
     <div class="drawer-meta">Est. Current Base Cost</div>
     <div id="price-display-value" class="drawer-value" style="color: #F59E0B; font-weight: bold; font-size: 15px;">₹45,000 per single luxury night.</div>
     
-    <!-- PACKING SUITCASE MATRIX CONTAINER -->
+    <!-- LUGGAGE CONTAINER COMPARTMENTS -->
     <div id="suitcase-airport-set">
       <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.4);">
         <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.25);"></div>
@@ -146,27 +173,3 @@
         <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.25);"></div>
         <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
         <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket pin template.</div></div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> Fountains are 100% free and pristine.</div></div>
-      </div>
-    </div>
-
-    <div id="suitcase-train-set" style="display: none;">
-      <div class="suitcase-container" style="border-color: rgba(96, 165, 250, 0.4);">
-        <div class="suitcase-handle" style="background: rgba(96, 165, 250, 0.25);"></div>
-        <div class="suitcase-tag tag-rules">Trunk 03: Train Etiquette</div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Quiet Zones:</b> Keep conversational volumes to a whisper.</div></div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Boarding Lane:</b> Allow incoming passengers to exit fully first.</div></div>
-      </div>
-    </div>
-    
-    <button id="transit-main-btn" class="transit-btn" onclick="triggerStageTransit()">Board Alpine Train</button>
-  </div>
-
-  <!-- THE INTERACTIVE 360-DEGREE PANORAMIC VIEWPORT LAYER -->
-  <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
-    
-    <!-- PROCEDURAL MATRIX GENERATOR: Creates a beautiful 360° gradient horizon that NEVER triggers CORS blocks -->
-    <a-sky id="skybox" geometry="primitive: sphere; radius: 5000; segmentsWidth: 64; segmentsHeight: 32"
-           material="shader: gradient; topColor: #0f172a; bottomColor: #1e3a8a; side: back"></a-sky>
-
-    <!-- Luxury Minimalist floating concierge interaction node ring floating in the 3D space -->
