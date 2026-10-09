@@ -4,19 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Absolute Swiss Simulator</title>
-  <!-- Loading our core 3D simulation framework securely -->
-  <script src="https://aframe.io"></script>
   
   <style>
-    body, html { margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden; background-color: #0f172a; }
+    /* Premium Luxury Travel Canvas Background */
+    body, html { 
+      margin: 0; padding: 0; 
+      font-family: 'Helvetica Neue', Arial, sans-serif; 
+      height: 100%; overflow: hidden;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+      display: flex; justify-content: center; align-items: center;
+      transition: background 0.8s ease;
+    }
     
+    /* Elegant Top Status HUD Bar */
     #concierge-hud {
-      position: absolute; bottom: 20px; left: 20px; z-index: 10;
-      background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px 25px;
-      color: #fff; border-radius: 4px; letter-spacing: 2px; font-size: 12px;
+      position: absolute; top: 30px; left: 30px; z-index: 10;
+      background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 25px;
+      color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px;
+      text-transform: uppercase;
     }
 
+    /* Central Luxury Interactive Dashboard */
+    .resort-dashboard {
+      text-align: center; color: white; z-index: 5;
+    }
+    .resort-title { font-size: 26px; font-weight: 200; letter-spacing: 6px; margin-bottom: 10px; color: #FFF; text-transform: uppercase; }
+    .resort-subtitle { font-size: 12px; font-weight: 300; letter-spacing: 3px; color: #94A3B8; margin-bottom: 40px; }
+
+    .luxury-node-btn {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #FFF; padding: 18px 40px; font-size: 12px; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer; border-radius: 50px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.05);
+      transition: all 0.4s ease;
+    }
+    .luxury-node-btn:hover {
+      border-color: #F59E0B; background: rgba(245, 158, 11, 0.1);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); transform: scale(1.05);
+    }
+
+    /* Sliding Concierge Cabinet Drawer System */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 350px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
@@ -37,21 +65,31 @@
     .currency-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
+    /* Visual Luxury Suitcase Containers */
     .suitcase-container {
-      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 6px; padding: 15px; margin-bottom: 20px; box-sizing: border-box;
     }
     .suitcase-handle {
       width: 40px; height: 8px; background: rgba(255, 255, 255, 0.2);
-      margin: -23px auto 15px auto; border-radius: 4px 4px 0 0; border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: -23px auto 15px auto; border-radius: 4px 4px 0 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .suitcase-tag { font-size: 9px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
+    .suitcase-tag {
+      font-size: 9px; font-weight: bold; letter-spacing: 1px;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
+      display: inline-block; margin-bottom: 10px;
+    }
     .tag-mandatory { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
     .tag-optional { background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .tag-rules { background: rgba(96, 165, 250, 0.15); color: #60A5FA; border: 1px solid rgba(96, 165, 250, 0.3); }
     
     .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; text-align: left; }
-    .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
+    .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; background: none; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
+
     .transit-btn { background: #D00000; border: none; color: white; width: 100%; padding: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; transition: background 0.3s; }
+    .transit-btn:hover { background: #A00000; }
   </style>
 
   <script>
@@ -61,12 +99,36 @@
     function setCurrency(matrixCode) {
       currentCurrency = matrixCode;
       document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`btn-${matrixCode}`).classList.add('active');
+      const activeBtn = document.getElementById(`btn-${matrixCode}`);
+      if(activeBtn) activeBtn.classList.add('active');
       
-      const priceElement = document.getElementById('price-value');
-      if (currentCurrency === 'INR') priceElement.innerText = "₹45,000 per single luxury night.";
-      if (currentCurrency === 'CHF') priceElement.innerText = "CHF 480 per single luxury night.";
-      if (currentCurrency === 'USD') priceElement.innerText = "\$540 per single luxury night.";
+      const priceElement = document.getElementById('price-display-value');
+      if (priceElement) {
+        if (currentStage === 'airport') {
+          if (matrixCode === 'INR') priceElement.innerText = "₹45,000 per single luxury night.";
+          if (matrixCode === 'CHF') priceElement.innerText = "CHF 480 per single luxury night.";
+          if (matrixCode === 'USD') priceElement.innerText = "$540 per single luxury night.";
+        } else {
+          if (matrixCode === 'INR') priceElement.innerText = "₹4,200 per 1st Class panoramic seat.";
+          if (matrixCode === 'CHF') priceElement.innerText = "CHF 45 per 1st Class panoramic seat.";
+          if (matrixCode === 'USD') priceElement.innerText = "$50 per 1st Class panoramic seat.";
+        }
+      }
+    }
+
+    function triggerStageTransit() {
+      currentStage = 'train';
+      document.body.style.background = "linear-gradient(135deg, #064e3b 0%, #022c22 50%, #111827 100%)";
+      document.getElementById('hud-text').innerText = "THE ABSOLUTE SWISS SIMULATOR • STAGE 02";
+      document.getElementById('resort-main-title').innerText = "SWISS ALPINE RAILWAY LINK";
+      document.getElementById('resort-sub-title').innerText = "En Route to Interlaken Pedestrian Lanes";
+      
+      document.getElementById('d-title').innerText = "Stage 2: Swiss Federal Rail Link";
+      document.getElementById('suitcase-airport-set').style.display = 'none';
+      document.getElementById('suitcase-train-set').style.display = 'block';
+      document.getElementById('transit-main-btn').style.display = 'none';
+      
+      setCurrency(currentCurrency);
     }
 
     function openConciergeDrawer() {
@@ -81,52 +143,42 @@
 </head>
 <body>
 
-  <div id="concierge-hud">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</div>
+  <!-- STATUS HUD OVERLAY -->
+  <div id="concierge-hud">
+    <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
+  </div>
 
+  <!-- CONCIERGE DRAWER -->
   <div id="luxury-drawer" class="concierge-drawer">
     <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
-    <div class="drawer-title">Arrival & Luggage Check</div>
+    <div id="d-title" class="drawer-title">Stage 1: Arrival & Luggage Check</div>
     
     <div class="currency-selector">
       <button id="btn-INR" class="currency-btn active" onclick="setCurrency('INR')">INR (₹)</button>
       <button id="btn-CHF" class="currency-btn" onclick="setCurrency('CHF')">CHF</button>
-      <button id="btn-USD" class="currency-btn" onclick="setCurrency('USD')">USD (\$)</button>
+      <button id="btn-USD" class="currency-btn" onclick="setCurrency('USD')">USD ($)</button>
     </div>
     
-    <div class="drawer-meta">Est. Base Cost</div>
-    <div id="price-value" class="drawer-value" style="color: #F59E0B; font-weight: bold; font-size: 15px;">₹45,000 per single luxury night.</div>
+    <div class="drawer-meta">Est. Current Base Cost</div>
+    <div id="price-display-value" class="drawer-value" style="color: #F59E0B; font-weight: bold; font-size: 15px;">₹45,000 per single luxury night.</div>
     
-    <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
-      <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
-      <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
-      <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
-      <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Active multi-region active policy.</div></div>
+    <!-- LUGGAGE TRUNKS -->
+    <div id="suitcase-airport-set">
+      <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.2);"></div>
+        <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Active multi-region active policy.</div></div>
+      </div>
+      
+      <div class="suitcase-container" style="border-color: rgba(52, 211, 153, 0.3);">
+        <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.2);"></div>
+        <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket standard.</div></div>
+        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> Public fountains are free and pristine.</div></div>
+      </div>
     </div>
-    
-    <button class="transit-btn">Transit to Alpine Lanes</button>
-  </div>
 
-  <!-- THE VR 360 INTERACTIVE ENGINE -->
-  <a-scene embedded style="position: absolute; top:0; left:0; width:100%; height:100%;">
-    <a-assets>
-      <!-- CORS BYPASS: Procedural matrix generation pathway ensures gapless wrap-around textures -->
-      <img id="airport-arrival" src="https://unsplash.com" crossorigin="anonymous">
-    </a-assets>
-
-    <!-- The 3D container wrapper forces an immersive spherical bubble wall configuration -->
-    <a-sky id="skybox" src="#airport-arrival" radius="5000" rotation="0 -90 0"></a-sky>
-
-    <!-- Luxury Minimalist floating concierge interaction node ring -->
-    <a-ring position="0 1.5 -3" radius-inner="0.15" radius-outer="0.18" color="#FFF" onclick="openConciergeDrawer()"
-            animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 1200; loop: true">
-      <a-circle radius="0.14" color="#F59E0B" opacity="0.4"></a-circle>
-    </a-ring>
-
-    
-      
-      
-    
-  </a-scene>
-
-</body>
-</html>
+    <div id="suitcase-train-set" style="display: none;">
+      <div class="suitcase-container" style="border-color: rgba(96, 165, 250, 0.4);">
+        <div class="suitcase-handle" style="background: rgba(96, 165, 250, 0.2);"></div>
