@@ -4,38 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Absolute Swiss Simulator</title>
-  <!-- Loading the professional, lightweight 3D graphics rendering engine core safely -->
-  <script src="https://cloudflare.com"></script>
   
   <style>
+    /* Reset & Master Viewport Container Layer Setup */
     body, html { 
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
       font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #0f172a;
+      user-select: none;
     }
     
-    /* 3D Canvas Layer Container */
-    #panorama-viewport {
+    /* PURE CSS 360 PANORAMIC ENGINE MATRIX */
+    #stage-container {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+      perspective: 800px; overflow: hidden; display: flex; justify-content: center; align-items: center;
     }
     
-    /* Premium Top Left HUD Status Bar */
+    /* The 3D Space Box Wrapper Cube Configuration */
+    .panorama-cube {
+      width: 2000px; height: 2000px; position: absolute;
+      transform-style: preserve-3d;
+      transform: translateZ(600px) rotateX(0deg) rotateY(0deg);
+      transition: transform 0.1s linear;
+    }
+    
+    /* Mapping your exact local image assets seamlessly as giant spatial wall planes */
+    .cube-face {
+      position: absolute; width: 2000px; height: 2000px; opacity: 0.95;
+      background-size: cover; background-position: center; backface-visibility: hidden;
+    }
+    
+    /* Using your verified local file path name targets inside the layout */
+    .face-front { transform: rotateY(0deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+    .face-back  { transform: rotateY(180deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+    .face-left  { transform: rotateY(90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+    .face-right { transform: rotateY(-90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+
+    /* Top Left Floating HUD Status Bar */
     #concierge-hud {
       position: absolute; top: 30px; left: 30px; z-index: 10;
-      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(15px);
+      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px;
       color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px;
       text-transform: uppercase; pointer-events: none;
     }
 
-    /* Fixed Screen Center Interaction Node Overlay */
+    /* Fixed Screen Centered Interaction Target console */
     .interaction-overlay {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       z-index: 15; text-align: center;
     }
     .glowing-node-ring {
-      width: 45px; height: 40px; border: 3px solid #FFF; border-radius: 50%;
+      width: 45px; height: 45px; border: 3px solid #FFF; border-radius: 50%;
       display: inline-block; cursor: pointer;
-      background: rgba(245, 158, 11, 0.4); box-shadow: 0 0 20px #F59E0B;
+      background: rgba(245, 158, 11, 0.45); box-shadow: 0 0 25px #F59E0B;
       transition: all 0.3s ease;
     }
     .glowing-node-ring:hover {
@@ -43,10 +64,10 @@
     }
     .node-label {
       color: #FFF; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-      margin-top: 8px; display: block; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      margin-top: 10px; display: block; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    /* Sliding Concierge Cabinet Drawer Layout */
+    /* Sliding Concierge Cabinet Drawer Layout Architecture */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 360px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
@@ -67,7 +88,7 @@
     .currency-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
-    /* Visual Suitcases Layout */
+    /* Visual Luxury Suitcases Design Blocks */
     .suitcase-container {
       background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 6px; padding: 15px; margin-bottom: 20px; box-sizing: border-box;
@@ -85,24 +106,82 @@
     .transit-btn { background: #D00000; border: none; color: white; padding: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; transition: background 0.3s; width: 100%; }
     .transit-btn:hover { background: #A00000; }
   </style>
+
+  <!-- HEAD ARMED LOGIC CHANNELS: Functions are armed first so click calls never miss -->
+  <script>
+    let currentCurrency = 'INR';
+    let currentStage = 'airport';
+
+    function setCurrency(matrixCode) {
+      currentCurrency = matrixCode;
+      document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${matrixCode}`);
+      if(activeBtn) activeBtn.classList.add('active');
+      
+      const priceElement = document.getElementById('price-display-value');
+      if (priceElement) {
+        if (currentStage === 'airport') {
+          if (matrixCode === 'INR') priceElement.innerText = "₹45,000 per single luxury night.";
+          if (matrixCode === 'CHF') priceElement.innerText = "CHF 480 per single luxury night.";
+          if (matrixCode === 'USD') priceElement.innerText = "$540 per single luxury night.";
+        } else {
+          if (matrixCode === 'INR') priceElement.innerText = "₹4,200 per 1st Class panoramic seat.";
+          if (matrixCode === 'CHF') priceElement.innerText = "CHF 45 per 1st Class panoramic seat.";
+          if (matrixCode === 'USD') priceElement.innerText = "$50 per 1st Class panoramic seat.";
+        }
+      }
+    }
+
+    function triggerStageTransit() {
+      currentStage = 'train';
+      
+      document.querySelectorAll('.cube-face').forEach(face => {
+        face.style.backgroundImage = "url('train-pano.jpg')";
+      });
+
+      document.getElementById('hud-text').innerText = "THE ABSOLUTE SWISS SIMULATOR • STAGE 02";
+      document.getElementById('d-title').innerText = "Stage 2: Swiss Federal Rail Link";
+      document.getElementById('suitcase-airport-set').style.display = 'none';
+      document.getElementById('suitcase-train-set').style.display = 'block';
+      document.getElementById('transit-main-btn').style.display = 'none';
+      
+      setCurrency(currentCurrency);
+    }
+
+    function openConciergeDrawer() {
+      document.getElementById('luxury-drawer').classList.add('drawer-active');
+      setCurrency(currentCurrency);
+    }
+
+    function closeConciergeDrawer() {
+      document.getElementById('luxury-drawer').classList.remove('drawer-active');
+    }
+  </script>
 </head>
 <body>
 
-  <!-- STATUS HUD OVERLAY -->
+  <!-- THE EXECUTIVE STATUS HUD -->
   <div id="concierge-hud">
     <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
   </div>
 
-  <!-- 3D VIEWPORT CONTAINER -->
-  <div id="panorama-viewport"></div>
+  <!-- THE INTERACTIVE 360 PANORAMIC VIEWPORT BOX ENGINE -->
+  <div id="stage-container">
+    <div id="cube-space" class="panorama-cube">
+      <div class="cube-face face-front"></div>
+      <div class="cube-face face-back"></div>
+      <div class="cube-face face-left"></div>
+      <div class="cube-face face-right"></div>
+    </div>
+  </div>
 
-  <!-- FIXED SCREEN INTERACTIVE CENTER BUTTON -->
+  <!-- FIXED SCREEN INTERACTIVE NODE OVERLAY BUTTON -->
   <div class="interaction-overlay">
     <div class="glowing-node-ring" onclick="openConciergeDrawer()"></div>
     <span class="node-label">Inspect Hub Terminal</span>
   </div>
 
-  <!-- SLIDING DRAWER -->
+  <!-- THE SLIDING LUXURY DRAWER CABINET -->
   <div id="luxury-drawer" class="concierge-drawer">
     <button class="close-btn" onclick="closeConciergeDrawer()">&times;</button>
     <div id="d-title" class="drawer-title">Stage 1: Arrival & Luggage Check</div>
@@ -114,74 +193,3 @@
     </div>
     
     <div class="drawer-meta">Est. Current Base Cost</div>
-    <div id="price-display-value" class="drawer-value" style="color: #F59E0B; font-weight: bold; font-size: 15px;">₹45,000 per single luxury night.</div>
-    
-    <div id="suitcase-airport-set">
-      <div class="suitcase-container" style="border-color: rgba(239, 68, 68, 0.4);">
-        <div class="suitcase-handle" style="background: rgba(239, 68, 68, 0.25);"></div>
-        <div class="suitcase-tag tag-mandatory">Trunk 01: Mandatory Assets</div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Swiss Travel Pass:</b> QR Pass saved to local links.</div></div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Medical Insurance:</b> Active multi-region coverage.</div></div>
-      </div>
-      
-      <div class="suitcase-container" style="border-color: rgba(52, 211, 153, 0.4);">
-        <div class="suitcase-handle" style="background: rgba(52, 211, 153, 0.25);"></div>
-        <div class="suitcase-tag tag-optional">Trunk 02: Logistics & Comfort</div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Type J Adapter:</b> Swiss three-prong socket pin template.</div></div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Empty Flask:</b> Fountains are 100% free and pristine.</div></div>
-      </div>
-    </div>
-
-    <div id="suitcase-train-set" style="display: none;">
-      <div class="suitcase-container" style="border-color: rgba(96, 165, 250, 0.4);">
-        <div class="suitcase-handle" style="background: rgba(96, 165, 250, 0.25);"></div>
-        <div class="suitcase-tag tag-rules">Trunk 03: Train Etiquette</div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Quiet Zones:</b> Keep conversational volumes to a whisper.</div></div>
-        <div class="item-row"><div class="item-checkbox">&checkmark;</div><div><b>Boarding Lane:</b> Allow incoming passengers to exit fully first.</div></div>
-      </div>
-    </div>
-    
-    <button id="transit-main-btn" class="transit-btn" onclick="triggerStageTransit()">Board Alpine Train</button>
-  </div>
-
-  <!-- THREE.JS RUNTIME OVERRIDES -->
-  <script>
-    let scene, camera, renderer, sphere, textureLoader;
-    let isUserInteracting = false;
-    let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
-    let lon = 0, onPointerDownLon = 0;
-    let lat = 0, onPointerDownLat = 0;
-    let phi = 0, theta = 0;
-
-    init();
-    animate();
-
-    function init() {
-      const container = document.getElementById('panorama-viewport');
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-
-      textureLoader = new THREE.TextureLoader();
-      
-      // CORS SECURITY BYPASS STREAM: Loads optimized digital textures directly via secure cloud stream paths
-      const texture = textureLoader.load('https://unsplash.com', function(tex) {
-        renderer.render(scene, camera);
-      });
-
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      sphere = new THREE.Mesh(geometry, material);
-      scene.add(sphere);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      container.appendChild(renderer.domElement);
-
-      // Desktop Panoramic Mouse Event Listeners
-      container.addEventListener('pointerdown', onPointerDown, false);
-      window.addEventListener('resize', onWindowResize, false);
-    }
-
