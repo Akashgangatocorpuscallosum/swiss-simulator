@@ -13,11 +13,10 @@
       font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #0f172a;
     }
     
-    /* 3D Canvas Container */
+    /* 3D Canvas Container - pointer-events: none lets your mouse clicks pass straight down to the buttons! */
     #panorama-viewport {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: grab;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
     }
-    #panorama-viewport:active { cursor: grabbing; }
     
     /* Premium Top Left HUD Status Bar */
     #concierge-hud {
@@ -28,14 +27,14 @@
       text-transform: uppercase; pointer-events: none;
     }
 
-    /* Fixed Screen Center Interaction Node */
+    /* Fixed Screen Center Interaction Node Overlay */
     .interaction-overlay {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      z-index: 5; text-align: center; pointer-events: none;
+      z-index: 5; text-align: center;
     }
     .glowing-node-ring {
       width: 40px; height: 40px; border: 3px solid #FFF; border-radius: 50%;
-      display: inline-block; cursor: pointer; pointer-events: auto;
+      display: inline-block; cursor: pointer;
       background: rgba(245, 158, 11, 0.4); box-shadow: 0 0 20px #F59E0B;
       transition: all 0.3s ease;
     }
@@ -47,7 +46,7 @@
       margin-top: 8px; display: block; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    /* Sliding Concierge Cabinet Drawer Layout Layout */
+    /* Sliding Concierge Cabinet Drawer Layout */
     .concierge-drawer {
       position: absolute; top: 0; right: -420px; width: 360px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
@@ -148,7 +147,7 @@
 
   <!-- THREE.JS 3D ENGINE GRAPHICS CARD ROUTINE -->
   <script>
-    let scene, camera, renderer, sphere;
+    let scene, camera, renderer, sphere, textureLoader;
     let isUserInteracting = false;
     let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
     let lon = 0, onPointerDownLon = 0;
@@ -160,25 +159,30 @@
 
     function init() {
       const container = document.getElementById('panorama-viewport');
-
-      // Initialize 3D Scene Space
       scene = new THREE.Scene();
-
-      // Initialize Perspective View Camera
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
 
-      // Create a perfect geometric sphere to act as our 360° bubble dome shell
       const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1); // Invert the sphere out so you stand cleanly on the inside
+      geometry.scale(-1, 1, 1);
 
-      // Create a high-grade shader layer matching your local visual images seamlessly
-      const texture = new THREE.TextureLoader().load('swiss-pano.jpg');
-      const material = new THREE.MeshBasicMaterial({ map: texture });
+      textureLoader = new THREE.TextureLoader();
+      
+      // CASE-INSENSITIVE MULTI-FALLBACK ENGINE FOR TEXTURES
+      const texture = textureLoader.load('swiss-pano.jpg', 
+        function(loadedTexture) { // Success callback
+          sphere.material.map = loadedTexture;
+          sphere.material.needsUpdate = true;
+        },
+        undefined,
+        function() { // Error fallback loop
+          textureLoader.load('swiss-pano.JPG', function(fallbackTex) {
+            sphere.material.map = fallbackTex;
+            sphere.material.needsUpdate = true;
+          });
+        }
+      );
 
+      const material = new THREE.MeshBasicMaterial({ color: #1e293b, map: texture });
       sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      // WebGL Renderer Core mapping setup
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
