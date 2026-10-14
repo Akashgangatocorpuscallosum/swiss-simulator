@@ -3,134 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Absolute Swiss Simulator - Panoramic Tour</title>
-  <!-- Loading the professional 3D graphics rendering engine core safely -->
-  <script src="https://cloudflare.com"></script>
+  <title>The Absolute Swiss Simulator - Panoramic Movie Tour</title>
   
   <style>
+    /* Reset & Full Screen Layer Setup */
     body, html { 
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-      background-color: #000;
+      background-color: #000; user-select: none;
     }
-    /* 3D Canvas Layer Container Setup */
-    #panorama-viewport {
-      width: 100%; height: 100%; cursor: grab;
+    
+    /* PURE HARDWARE-LIGHTWEIGHT 360° DOME ENGINE */
+    #stage-container {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+      perspective: 900px; overflow: hidden; display: flex; justify-content: center; align-items: center;
     }
-    #panorama-viewport:active { cursor: grabbing; }
+    
+    /* Immersive 3D Space Box Wrapper Cube Configuration */
+    .panorama-cube {
+      width: 2000px; height: 2000px; position: absolute;
+      transform-style: preserve-3d;
+      transform: translateZ(600px) rotateX(0deg) rotateY(0deg);
+      transition: transform 0.1s linear;
+    }
+    
+    /* Mapping your flat images as giant seamless environment walls wrapping around you */
+    .cube-face {
+      position: absolute; width: 2000px; height: 2000px;
+      background-size: cover; background-position: center; backface-visibility: hidden;
+      background-color: #1e293b; /* Sleek charcoal fallback color */
+    }
+    
+    /* Enforcing your strict local file paths natively with zero CORS blocks */
+    .face-front { transform: rotateY(0deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+    .face-back  { transform: rotateY(180deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+    .face-left  { transform: rotateY(90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+    .face-right { transform: rotateY(-90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
+
+    /* Top Left Status Bar */
+    #concierge-hud {
+      position: absolute; top: 30px; left: 30px; z-index: 10;
+      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px;
+      color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px;
+      text-transform: uppercase; pointer-events: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- THE 3D VIEWPORT LAYER CONTAINER -->
-  <div id="panorama-viewport"></div>
+  <!-- THE STATUS BAR HUD -->
+  <div id="concierge-hud">
+    <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
+  </div>
 
-  <!-- THREE.JS 3D ENGINE GRAPHICS CARD ROUTINE -->
+  <!-- THE INTERACTIVE 360 PANORAMIC VIEWPORT BOX ENGINE -->
+  <div id="stage-container">
+    <div id="cube-space" class="panorama-cube">
+      <div class="cube-face face-front"></div>
+      <div class="cube-face face-back"></div>
+      <div class="cube-face face-left"></div>
+      <div class="cube-face face-right"></div>
+    </div>
+  </div>
+
+  <!-- FIRST-PERSON MOUSE DRAG AND TELEPORTATION TRANSIT ROUTINE -->
   <script>
-    let scene, camera, renderer, sphere, textureLoader;
-    let isUserInteracting = false;
-    let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
-    let lon = 0, onPointerDownLon = 0;
-    let lat = 0, onPointerDownLat = 0;
-    let phi = 0, theta = 0;
-
-    // Track our current panoramic location stage
+    let cube = document.getElementById('cube-space');
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let rotation = { x: 0, y: 0 };
     let currentStage = 1;
 
-    init();
-    animate();
+    // First-Person Drag Rotation Controls
+    document.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
 
-    function init() {
-      const container = document.getElementById('panorama-viewport');
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-
-      // Construct a perfect 3D bubble dome shell
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1); // Invert the sphere out so you stand cleanly on the inside
-
-      textureLoader = new THREE.TextureLoader();
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      let deltaMove = { x: e.clientX - previousMousePosition.x, y: e.clientY - previousMousePosition.y };
       
-      // Load Stage 1: The Main Alpine View
-      const texture = textureLoader.load('swiss-pano.jpg');
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      sphere = new THREE.Mesh(geometry, material);
-      scene.add(sphere);
-
-      // WebGL Renderer Core mapping setup
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      container.appendChild(renderer.domElement);
-
-      // Desktop First-Person Mouse Track Bindings
-      document.addEventListener('pointerdown', onPointerDown, false);
+      rotation.y += deltaMove.x * 0.15;
+      rotation.x = Math.max(-45, Math.min(45, rotation.x - deltaMove.y * 0.15));
       
-      // Double-click anywhere on the screen to transit between Stage 1 and Stage 2!
-      document.addEventListener('dblclick', triggerStageTransit, false);
-      
-      window.addEventListener('resize', onWindowResize, false);
-    }
+      cube.style.transform = `translateZ(600px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
 
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+    document.addEventListener('mouseup', () => { isDragging = false; });
 
-    function onPointerDown(event) {
-      isUserInteracting = true;
-      onPointerDownPointerX = event.clientX;
-      onPointerDownPointerY = event.clientY;
-      onPointerDownLon = lon;
-      onPointerDownLat = lat;
-      document.addEventListener('pointermove', onPointerMove, false);
-      document.addEventListener('pointerup', onPointerUp, false);
-    }
-
-    function onPointerMove(event) {
-      if (isUserInteracting === false) return;
-      lon = (onPointerDownPointerX - event.clientX) * 0.1 + onPointerDownLon;
-      lat = (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
-    }
-
-    function onPointerUp() {
-      isUserInteracting = false;
-      document.removeEventListener('pointermove', onPointerMove);
-      document.removeEventListener('pointerup', onPointerUp);
-    }
-
-    // Transit function to switch between your panoramic scenery views seamlessly
-    function triggerStageTransit() {
+    // Double-Click To Transit Location Stages (Teleports from Airport to Alpine Rail Tracks!)
+    document.addEventListener('dblclick', () => {
       if (currentStage === 1) {
         currentStage = 2;
-        const nextTexture = textureLoader.load('train-pano.jpg');
-        sphere.material.map = nextTexture;
-        sphere.material.needsUpdate = true;
+        document.querySelectorAll('.cube-face').forEach(face => {
+          face.style.backgroundImage = "url('train-pano.jpg')";
+        });
+        document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
       } else {
         currentStage = 1;
-        const prevTexture = textureLoader.load('swiss-pano.jpg');
-        sphere.material.map = prevTexture;
-        sphere.material.needsUpdate = true;
+        document.querySelectorAll('.cube-face').forEach(face => {
+          face.style.backgroundImage = "url('swiss-pano.jpg')";
+        });
+        document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01";
       }
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      update();
-    }
-
-    function update() {
-      lat = Math.max(-85, Math.min(85, lat));
-      phi = THREE.MathUtils.degToRad(90 - lat);
-      theta = THREE.MathUtils.degToRad(lon);
-
-      const x = 500 * Math.sin(phi) * Math.sin(theta);
-      const y = 500 * Math.cos(phi);
-      const z = 500 * Math.sin(phi) * Math.cos(theta);
-
-      camera.lookAt(x, y, z);
-      renderer.render(scene, camera);
-    }
+    });
   </script>
 
 </body>
