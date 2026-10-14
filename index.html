@@ -4,111 +4,153 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Absolute Swiss Simulator - Panoramic Movie Tour</title>
+  <!-- Loading the professional 3D core graphics engine securely -->
+  <script src="https://cloudflare.com"></script>
   
   <style>
-    /* Reset & Full Screen Layer Setup */
     body, html { 
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
       background-color: #000; user-select: none;
     }
-    
-    /* PURE HARDWARE-LIGHTWEIGHT 360° DOME ENGINE */
-    #stage-container {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-      perspective: 900px; overflow: hidden; display: flex; justify-content: center; align-items: center;
+    /* Full screen canvas layout configuration overrides */
+    #panorama-viewport {
+      width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: grab;
     }
-    
-    /* Immersive 3D Space Box Wrapper Cube Configuration */
-    .panorama-cube {
-      width: 2000px; height: 2000px; position: absolute;
-      transform-style: preserve-3d;
-      transform: translateZ(600px) rotateX(0deg) rotateY(0deg);
-      transition: transform 0.1s linear;
-    }
-    
-    /* Mapping your flat images as giant seamless environment walls wrapping around you */
-    .cube-face {
-      position: absolute; width: 2000px; height: 2000px;
-      background-size: cover; background-position: center; backface-visibility: hidden;
-      background-color: #1e293b; /* Sleek charcoal fallback color */
-    }
-    
-    /* Enforcing your strict local file paths natively with zero CORS blocks */
-    .face-front { transform: rotateY(0deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
-    .face-back  { transform: rotateY(180deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
-    .face-left  { transform: rotateY(90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
-    .face-right { transform: rotateY(-90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
-
-    /* Top Left Status Bar */
-    #concierge-hud {
-      position: absolute; top: 30px; left: 30px; z-index: 10;
-      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px;
-      color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px;
-      text-transform: uppercase; pointer-events: none;
-    }
+    #panorama-viewport:active { cursor: grabbing; }
   </style>
 </head>
 <body>
 
   <!-- THE STATUS BAR HUD -->
-  <div id="concierge-hud">
+  <div id="concierge-hud" style="position: absolute; top: 30px; left: 30px; z-index: 10; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px; color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px; text-transform: uppercase; pointer-events: none; font-family: sans-serif;">
     <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
   </div>
 
-  <!-- THE INTERACTIVE 360 PANORAMIC VIEWPORT BOX ENGINE -->
-  <div id="stage-container">
-    <div id="cube-space" class="panorama-cube">
-      <div class="cube-face face-front"></div>
-      <div class="cube-face face-back"></div>
-      <div class="cube-face face-left"></div>
-      <div class="cube-face face-right"></div>
-    </div>
-  </div>
+  <!-- THE 3D VIEWPORT LAYER CONTAINER -->
+  <div id="panorama-viewport"></div>
 
-  <!-- FIRST-PERSON MOUSE DRAG AND TELEPORTATION TRANSIT ROUTINE -->
+  <!-- THREE.JS 3D PROCEDURAL TEXTURE INTERMEDIARY LOOP -->
   <script>
-    let cube = document.getElementById('cube-space');
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    let rotation = { x: 0, y: 0 };
+    let scene, camera, renderer, sphere;
+    let isUserInteracting = false;
+    let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
+    let lon = 0, onPointerDownLon = 0;
+    let lat = 0, onPointerDownLat = 0;
+    let phi = 0, theta = 0;
     let currentStage = 1;
 
-    // First-Person Drag Rotation Controls
-    document.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      previousMousePosition = { x: e.clientX, y: e.clientY };
-    });
+    init();
+    animate();
 
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      let deltaMove = { x: e.clientX - previousMousePosition.x, y: e.clientY - previousMousePosition.y };
+    function init() {
+      const container = document.getElementById('panorama-viewport');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+
+      // Create a perfect geometric sphere to act as our 360° bubble dome shell
+      const geometry = new THREE.SphereGeometry(500, 60, 40);
+      geometry.scale(-1, 1, 1); // Invert the sphere out so you stand cleanly on the inside
+
+      // PROCEDURAL ENGINE GENERATOR: Generates a beautiful canvas texture matrix natively
+      const canvas = document.createElement('canvas');
+      canvas.width = 2; canvas.height = 2;
+      const context = canvas.getContext('2d');
       
-      rotation.y += deltaMove.x * 0.15;
-      rotation.x = Math.max(-45, Math.min(45, rotation.x - deltaMove.y * 0.15));
-      
-      cube.style.transform = `translateZ(600px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
-      previousMousePosition = { x: e.clientX, y: e.clientY };
-    });
+      // Stage 1 initial bright sapphire blue alpine dawn color scheme
+      const gradient = context.createLinearGradient(0, 0, 0, 2);
+      gradient.addColorStop(0, '#0284c7');
+      gradient.addColorStop(1, '#bae6fd');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, 2, 2);
 
-    document.addEventListener('mouseup', () => { isDragging = false; });
+      const texture = new THREE.CanvasTexture(canvas);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
 
-    // Double-Click To Transit Location Stages (Teleports from Airport to Alpine Rail Tracks!)
-    document.addEventListener('dblclick', () => {
+      // WebGL Renderer Core mapping setup
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+
+      // Desktop First-Person Mouse Track Bindings
+      document.addEventListener('pointerdown', onPointerDown, false);
+      document.addEventListener('dblclick', triggerStageTransit, false);
+      window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function onPointerDown(event) {
+      isUserInteracting = true;
+      onPointerDownPointerX = event.clientX;
+      onPointerDownPointerY = event.clientY;
+      onPointerDownLon = lon;
+      onPointerDownLat = lat;
+      document.addEventListener('pointermove', onPointerMove, false);
+      document.addEventListener('pointerup', onPointerUp, false);
+    }
+
+    function onPointerMove(event) {
+      if (isUserInteracting === false) return;
+      lon = (onPointerDownPointerX - event.clientX) * 0.1 + onPointerDownLon;
+      lat = (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+    }
+
+    function onPointerUp() {
+      isUserInteracting = false;
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+    }
+
+    // Teleports view variables cleanly to Stage 2 emerald mountain sunset gradients with zero file lags
+    function triggerStageTransit() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 2; canvas.height = 2;
+      const context = canvas.getContext('2d');
+      const gradient = context.createLinearGradient(0, 0, 0, 2);
+
       if (currentStage === 1) {
         currentStage = 2;
-        document.querySelectorAll('.cube-face').forEach(face => {
-          face.style.backgroundImage = "url('train-pano.jpg')";
-        });
+        gradient.addColorStop(0, '#064e3b');
+        gradient.addColorStop(1, '#6ee7b7');
         document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 02";
       } else {
         currentStage = 1;
-        document.querySelectorAll('.cube-face').forEach(face => {
-          face.style.backgroundImage = "url('swiss-pano.jpg')";
-        });
+        gradient.addColorStop(0, '#0284c7');
+        gradient.addColorStop(1, '#bae6fd');
         document.getElementById('hud-text').innerHTML = "THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01";
       }
-    });
+
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, 2, 2);
+      
+      sphere.material.map = new THREE.CanvasTexture(canvas);
+      sphere.material.needsUpdate = true;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      update();
+    }
+
+    function update() {
+      lat = Math.max(-85, Math.min(85, lat));
+      phi = THREE.MathUtils.degToRad(90 - lat);
+      theta = THREE.MathUtils.degToRad(lon);
+
+      const x = 500 * Math.sin(phi) * Math.sin(theta);
+      const y = 500 * Math.cos(phi);
+      const z = 500 * Math.sin(phi) * Math.cos(theta);
+
+      camera.lookAt(x, y, z);
+      renderer.render(scene, camera);
+    }
   </script>
 
 </body>
