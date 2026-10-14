@@ -3,33 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Absolute Swiss Simulator - Panoramic Movie Tour</title>
+  <title>The Absolute Swiss Simulator - Production Cloud Master</title>
   <!-- Loading the professional 3D core graphics engine securely -->
   <script src="https://cloudflare.com"></script>
   
   <style>
     body, html { 
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-      background-color: #000; user-select: none;
+      background-color: #0f172a; user-select: none;
     }
-    /* Full screen canvas layout configuration overrides */
+    /* Full screen canvas viewport layout configuration overrides */
     #panorama-viewport {
-      width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: grab;
+      width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: grab; z-index: 1;
     }
     #panorama-viewport:active { cursor: grabbing; }
+
+    /* Floating HUD Status Bar Layout */
+    #concierge-hud {
+      position: absolute; top: 30px; left: 30px; z-index: 10; 
+      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px); 
+      border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px; 
+      color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px; 
+      text-transform: uppercase; pointer-events: none; font-family: sans-serif;
+    }
   </style>
 </head>
 <body>
 
   <!-- THE STATUS BAR HUD -->
-  <div id="concierge-hud" style="position: absolute; top: 30px; left: 30px; z-index: 10; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); padding: 15px 25px; color: #fff; border-radius: 4px; letter-spacing: 3px; font-size: 11px; text-transform: uppercase; pointer-events: none; font-family: sans-serif;">
+  <div id="concierge-hud">
     <span id="hud-text">THE ABSOLUTE SWISS SIMULATOR &bull; STAGE 01</span>
   </div>
 
   <!-- THE 3D VIEWPORT LAYER CONTAINER -->
   <div id="panorama-viewport"></div>
 
-  <!-- THREE.JS 3D PROCEDURAL TEXTURE INTERMEDIARY LOOP -->
+  <!-- THREE.JS SELF-CONTAINED 3D ENGINE GRAPHICS CARD ROUTINE -->
   <script>
     let scene, camera, renderer, sphere;
     let isUserInteracting = false;
@@ -49,14 +58,15 @@
 
       // Create a perfect geometric sphere to act as our 360° bubble dome shell
       const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1); // Invert the sphere out so you stand cleanly on the inside
+      geometry.scale(-1, 1, 1); // Invert sphere out so you stand cleanly on the inside
 
-      // PROCEDURAL ENGINE GENERATOR: Generates a beautiful canvas texture matrix natively
+      // SELF-CONTAINED PROCEDURAL TEXTURE LAYOUT MATRIX
+      // Generates beautiful full-screen horizons natively to bypass missing local asset blocks
       const canvas = document.createElement('canvas');
       canvas.width = 2; canvas.height = 2;
       const context = canvas.getContext('2d');
       
-      // Stage 1 initial bright sapphire blue alpine dawn color scheme
+      // Initial Stage 1 sapphire blue alpine dawn gradient setup
       const gradient = context.createLinearGradient(0, 0, 0, 2);
       gradient.addColorStop(0, '#0284c7');
       gradient.addColorStop(1, '#bae6fd');
@@ -78,12 +88,22 @@
       document.addEventListener('pointerdown', onPointerDown, false);
       document.addEventListener('dblclick', triggerStageTransit, false);
       window.addEventListener('resize', onWindowResize, false);
+
+      // Automated layout push forces initialization loops instantly on load
+      forceGraphicsRefresh();
+    }
+
+    function forceGraphicsRefresh() {
+      if (renderer) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera);
+      }
     }
 
     function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      forceGraphicsRefresh();
     }
 
     function onPointerDown(event) {
@@ -132,6 +152,7 @@
       
       sphere.material.map = new THREE.CanvasTexture(canvas);
       sphere.material.needsUpdate = true;
+      forceGraphicsRefresh();
     }
 
     function animate() {
