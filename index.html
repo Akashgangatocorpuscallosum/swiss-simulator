@@ -3,43 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Absolute Swiss Simulator</title>
+  <title>The Absolute Swiss Simulator & Travel Hub</title>
   
   <style>
-    /* Reset & Master Viewport Container Layer Setup */
     body, html { 
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
       font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #0f172a;
       user-select: none;
     }
     
-    /* PURE CSS 360 PANORAMIC ENGINE MATRIX */
+    /* LIGHTWEIGHT CSS 3D PANORAMIC CORE ENGINE */
     #stage-container {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-      perspective: 800px; overflow: hidden; display: flex; justify-content: center; align-items: center;
+      perspective: 900px; overflow: hidden; display: flex; justify-content: center; align-items: center;
     }
-    
-    /* The 3D Space Box Wrapper Cube Configuration */
     .panorama-cube {
       width: 2000px; height: 2000px; position: absolute;
       transform-style: preserve-3d;
       transform: translateZ(600px) rotateX(0deg) rotateY(0deg);
       transition: transform 0.1s linear;
     }
-    
-    /* Mapping your exact local image assets seamlessly as giant spatial wall planes */
     .cube-face {
       position: absolute; width: 2000px; height: 2000px; opacity: 0.95;
       background-size: cover; background-position: center; backface-visibility: hidden;
+      background-color: #1e293b;
     }
-    
-    /* Using your verified local file path name targets inside the layout */
     .face-front { transform: rotateY(0deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
     .face-back  { transform: rotateY(180deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
     .face-left  { transform: rotateY(90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
     .face-right { transform: rotateY(-90deg) translateZ(-1000px); background-image: url('swiss-pano.jpg'); }
 
-    /* Top Left Floating HUD Status Bar */
+    /* Top Left Status HUD Bar */
     #concierge-hud {
       position: absolute; top: 30px; left: 30px; z-index: 10;
       background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);
@@ -48,7 +42,7 @@
       text-transform: uppercase; pointer-events: none;
     }
 
-    /* Fixed Screen Centered Interaction Target console */
+    /* Fixed Screen Centered Interaction Target Node */
     .interaction-overlay {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       z-index: 15; text-align: center;
@@ -72,42 +66,50 @@
       position: absolute; top: 0; right: -420px; width: 360px; height: 100%;
       background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(20px);
       border-left: 1px solid rgba(255, 255, 255, 0.08); z-index: 25;
-      padding: 40px 25px; color: #E2E8F0; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 30px 20px; color: #E2E8F0; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       overflow-y: auto; box-sizing: border-box;
     }
     .drawer-active { right: 0; }
 
-    .drawer-title { font-size: 14px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; text-align: left; }
-    .drawer-meta { font-size: 10px; text-transform: uppercase; color: #64748B; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; text-align: left; }
-    .drawer-value { font-size: 13px; margin-bottom: 18px; font-weight: 300; line-height: 1.6; color: #CBD5E1; text-align: left; }
+    .drawer-title { font-size: 14px; font-weight: 300; letter-spacing: 3px; color: #F59E0B; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; text-align: left; }
+    .drawer-meta { font-size: 10px; text-transform: uppercase; color: #64748B; letter-spacing: 1px; margin-bottom: 3px; font-weight: bold; text-align: left; }
+    .drawer-value { font-size: 13px; margin-bottom: 15px; font-weight: 300; line-height: 1.5; color: #CBD5E1; text-align: left; }
     
-    .close-btn { background: none; border: none; color: #64748B; cursor: pointer; float: right; font-size: 22px; font-weight: 200; line-height: 1; margin-top: -5px; }
+    .close-btn { background: none; border: none; color: #64748B; cursor: pointer; float: right; font-size: 24px; font-weight: 200; line-height: 1; margin-top: -5px; }
     .close-btn:hover { color: #fff; }
 
-    .currency-selector { display: flex; gap: 8px; margin-bottom: 20px; }
+    .currency-selector { display: flex; gap: 8px; margin-bottom: 15px; }
     .currency-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #94A3B8; padding: 6px 14px; font-size: 11px; cursor: pointer; border-radius: 4px; letter-spacing: 1px; }
     .currency-btn.active { border-color: #F59E0B; color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
 
     /* Visual Luxury Suitcases Design Blocks */
     .suitcase-container {
       background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px; padding: 15px; margin-bottom: 20px; box-sizing: border-box;
+      border-radius: 6px; padding: 12px; margin-bottom: 15px; box-sizing: border-box;
     }
     .suitcase-handle {
       width: 40px; height: 8px; background: rgba(255, 255, 255, 0.2);
-      margin: -23px auto 15px auto; border-radius: 4px 4px 0 0; border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: -20px auto 12px auto; border-radius: 4px 4px 0 0; border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .suitcase-tag { font-size: 9px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
+    .suitcase-tag { font-size: 9px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
     .tag-mandatory { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
     .tag-optional { background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .tag-rules { background: rgba(96, 165, 250, 0.15); color: #60A5FA; border: 1px solid rgba(96, 165, 250, 0.3); }
     
-    .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 8px; color: #CBD5E1; text-align: left; }
+    .item-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; margin-bottom: 6px; color: #CBD5E1; text-align: left; }
     .item-checkbox { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #F59E0B; flex-shrink: 0; margin-top: 2px; }
-    .transit-btn { background: #D00000; border: none; color: white; padding: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; transition: background 0.3s; width: 100%; }
+    .transit-btn { background: #D00000; border: none; color: white; padding: 12px; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; cursor: pointer; margin-top: 10px; border-radius: 4px; font-weight: bold; transition: background 0.3s; width: 100%; }
     .transit-btn:hover { background: #A00000; }
+
+    /* Programmatic Ad Layout Slots Placeholder Style */
+    .ad-slot-holder {
+      background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1);
+      padding: 10px; font-size: 10px; text-align: center; color: #64748B;
+      letter-spacing: 1px; margin-top: 20px; border-radius: 4px; text-transform: uppercase;
+    }
   </style>
 
-  <!-- HEAD ARMED LOGIC CHANNELS: Functions are armed first so click calls never miss -->
+  <!-- HEAD ARMED LOGIC CHANNELS -->
   <script>
     let currentCurrency = 'INR';
     let currentStage = 'airport';
@@ -192,4 +194,3 @@
       <button id="btn-USD" class="currency-btn" onclick="setCurrency('USD')">USD ($)</button>
     </div>
     
-    <div class="drawer-meta">Est. Current Base Cost</div>
